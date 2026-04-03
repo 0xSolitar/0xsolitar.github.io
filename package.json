@@ -8,6 +8,8 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "4.16.18"
+    "astro": "4.16.18",
+    "remark-directive": "^4.0.0",
+    "unist-util-visit": "^5.1.0"
   }
 }

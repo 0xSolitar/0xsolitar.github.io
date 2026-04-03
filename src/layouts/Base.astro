@@ -46,20 +46,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                     <a
                         href="/"
                         class={Astro.url.pathname === "/" ? "active" : ""}
-                        >Grimoire</a>
+                        >Grimoire</a
+                    >
                 </li>
                 <li>
                     <a
                         href="/archive"
                         class={Astro.url.pathname.startsWith("/archive")
                             ? "active"
-                            : ""}>Archive</a>
+                            : ""}>Archive</a
+                    >
                 </li>
                 <li>
                     <a
                         href="/about"
                         class={Astro.url.pathname === "/about" ? "active" : ""}
-                        >About</a>
+                        >About</a
+                    >
                 </li>
             </ul>
         </nav>
@@ -69,5 +72,60 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <footer class="grimoire-footer">
             <p class="footer-sig">0XSOLITAR · SOLITÄR · ALONE AMONG SYSTEMS</p>
         </footer>
+
+        <!-- Lightbox -->
+        <div id="lightbox" style="display:none;">
+            <img id="lightbox-img" src="" alt="" />
+        </div>
+
+        <style>
+            #lightbox {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                z-index: 999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: zoom-out;
+            }
+
+            #lightbox-img {
+                max-width: 90vw;
+                max-height: 90vh;
+                object-fit: contain;
+                border-radius: 4px;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+            }
+        </style>
+
+        <script>
+            const lightbox = document.getElementById("lightbox");
+            const lightboxImg = document.getElementById("lightbox-img");
+
+            // Apply to all images inside .prose (post content only)
+            document.querySelectorAll(".prose img").forEach((img) => {
+                img.style.cursor = "zoom-in";
+                img.addEventListener("click", () => {
+                    lightboxImg.src = img.src;
+                    lightboxImg.alt = img.alt;
+                    lightbox.style.display = "flex";
+                });
+            });
+
+            // Click backdrop or image to close
+            lightbox.addEventListener("click", () => {
+                lightbox.style.display = "none";
+                lightboxImg.src = "";
+            });
+
+            // ESC to close
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    lightbox.style.display = "none";
+                    lightboxImg.src = "";
+                }
+            });
+        </script>
     </body>
 </html>

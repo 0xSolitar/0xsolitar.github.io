@@ -1,12 +1,26 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+import remarkDirective from "remark-directive";
+import { visit } from "unist-util-visit";
+
+function remarkAdmonitions() {
+  return (tree) => {
+    visit(tree, (node) => {
+      if (node.type !== "containerDirective") return;
+      const data = node.data || (node.data = {});
+      data.hName = "div";
+      data.hProperties = { class: `admonition admonition-${node.name}` };
+    });
+  };
+}
 
 export default defineConfig({
-  site: 'https://0xsolitar.github.io',
-  output: 'static',
+  site: "https://0xsolitar.github.io",
+  output: "static",
   markdown: {
     shikiConfig: {
-      theme: 'one-dark-pro',
-      wrap: true,
+      theme: "one-dark-pro",
+      wrap: false,
     },
+    remarkPlugins: [remarkDirective, remarkAdmonitions],
   },
 });
