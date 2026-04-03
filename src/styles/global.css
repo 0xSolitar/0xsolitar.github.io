@@ -41,8 +41,8 @@ body {
     background-color: var(--parchment-dark);
     color: var(--text-primary);
     font-family: "IM Fell English", Georgia, serif;
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 20px;
+    line-height: 1.85;
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
@@ -93,7 +93,7 @@ img {
 
 .nav-logo {
     font-family: "Cinzel", serif;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--teal-bright);
     letter-spacing: 3px;
@@ -113,7 +113,7 @@ img {
 
 .nav-links a {
     font-family: "Cinzel", serif;
-    font-size: 13px;
+    font-size: 16px;
     color: var(--text-secondary);
     text-decoration: none;
     letter-spacing: 2px;
@@ -150,7 +150,7 @@ img {
 }
 .rune-divider span {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--teal-dim);
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -235,7 +235,7 @@ img {
 
 .grimoire-eyebrow {
     font-family: "Cinzel", serif;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 400;
     letter-spacing: 5px;
     text-transform: uppercase;
@@ -245,7 +245,7 @@ img {
 
 .grimoire-title {
     font-family: "Cinzel Decorative", serif;
-    font-size: clamp(22px, 4vw, 34px);
+    font-size: clamp(26px, 4vw, 38px);
     font-weight: 700;
     color: var(--text-primary);
     letter-spacing: 3px;
@@ -260,7 +260,7 @@ img {
 .grimoire-subtitle {
     font-family: "IM Fell English", serif;
     font-style: italic;
-    font-size: 17px;
+    font-size: 20px;
     color: var(--text-secondary);
     margin-bottom: 1.5rem;
 }
@@ -290,7 +290,7 @@ img {
 
 .sidebar-section-title {
     font-family: "Cinzel", serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -304,7 +304,7 @@ img {
 
 .category-name {
     font-family: "Cinzel", serif;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--teal-mid);
     letter-spacing: 1px;
@@ -328,7 +328,7 @@ img {
 
 .category-count {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
     background: var(--teal-ghost);
     border: 1px solid var(--border-rune);
@@ -345,7 +345,7 @@ img {
 
 .tag {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
     border: 1px solid rgba(93, 202, 165, 0.12);
     padding: 2px 8px;
@@ -370,7 +370,7 @@ img {
 
 .section-heading {
     font-family: "Cinzel", serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -443,13 +443,13 @@ img {
 
 .spell-date {
     font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
 }
 
 .spell-school {
     font-family: "Cinzel", serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -479,7 +479,7 @@ img {
 }
 .spell-tag-inline {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
 }
 .spell-tag-inline::before {
@@ -489,7 +489,7 @@ img {
 
 .new-label {
     font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: var(--teal-bright);
@@ -511,7 +511,7 @@ img {
 
 .spell-title {
     font-family: "Cinzel", serif;
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.4rem;
@@ -522,16 +522,16 @@ img {
 .spell-incantation {
     font-family: "IM Fell English", serif;
     font-style: italic;
-    font-size: 15px;
+    font-size: 18px;
     color: var(--text-secondary);
     margin-bottom: 0.7rem;
 }
 
 .spell-excerpt {
     font-family: "IM Fell English", serif;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text-secondary);
-    line-height: 1.7;
+    line-height: 1.8;
     margin-bottom: 1rem;
 }
 
@@ -545,7 +545,7 @@ img {
 
 .spell-read {
     font-family: "Cinzel", serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -554,7 +554,7 @@ img {
 
 .spell-stats {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-muted);
     display: flex;
     gap: 12px;
@@ -562,7 +562,7 @@ img {
 
 .mitre-badge {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--gold);
     background: rgba(201, 168, 76, 0.08);
     border: 1px solid var(--border-gold);
@@ -584,7 +584,7 @@ img {
 
 .article-back {
     font-family: "Cinzel", serif;
-    font-size: 10px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -616,7 +616,7 @@ img {
 
 .article-title {
     font-family: "Cinzel Decorative", serif;
-    font-size: clamp(20px, 3.5vw, 30px);
+    font-size: clamp(24px, 3.5vw, 34px);
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.25;
@@ -627,7 +627,7 @@ img {
 .article-description {
     font-family: "IM Fell English", serif;
     font-style: italic;
-    font-size: 16px;
+    font-size: 19px;
     color: var(--text-secondary);
     margin-bottom: 1.2rem;
 }
@@ -647,8 +647,8 @@ img {
 
 .prose {
     font-family: "IM Fell English", Georgia, serif;
-    font-size: 17px;
-    line-height: 1.85;
+    font-size: 20px;
+    line-height: 1.95;
     color: var(--text-primary);
 }
 
@@ -663,15 +663,15 @@ img {
     letter-spacing: 0.5px;
 }
 .prose h1 {
-    font-size: 22px;
+    font-size: 26px;
 }
 .prose h2 {
-    font-size: 18px;
+    font-size: 22px;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--border-rune);
 }
 .prose h3 {
-    font-size: 15px;
+    font-size: 18px;
     color: var(--teal-bright);
 }
 
@@ -733,13 +733,13 @@ img {
     padding: 1.25rem 1.5rem;
     overflow-x: auto;
     margin: 1.5rem 0;
-    font-size: 13.5px;
-    line-height: 1.6;
+    font-size: 15px;
+    line-height: 1.7;
 }
 
 .prose code {
     font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 /* Inline code */
@@ -749,18 +749,18 @@ img {
     border-radius: 2px;
     padding: 1px 6px;
     color: var(--teal-bright);
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .prose table {
     width: 100%;
     border-collapse: collapse;
     margin: 1.5rem 0;
-    font-size: 14px;
+    font-size: 16px;
 }
 .prose th {
     font-family: "Cinzel", serif;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -774,7 +774,7 @@ img {
     border-bottom: 1px solid rgba(93, 202, 165, 0.07);
     color: var(--text-secondary);
     font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
+    font-size: 15px;
 }
 .prose tr:hover td {
     background: var(--teal-ghost);
@@ -820,7 +820,7 @@ img {
 
 .about-identity h1 {
     font-family: "Cinzel Decorative", serif;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.3rem;
@@ -828,7 +828,7 @@ img {
 
 .about-identity .handle {
     font-family: "JetBrains Mono", monospace;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--teal-mid);
     margin-bottom: 0.6rem;
 }
@@ -836,7 +836,7 @@ img {
 .about-identity .tagline {
     font-family: "IM Fell English", serif;
     font-style: italic;
-    font-size: 14px;
+    font-size: 17px;
     color: var(--text-secondary);
 }
 
@@ -849,7 +849,7 @@ img {
 
 .about-link {
     font-family: "JetBrains Mono", monospace;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--text-muted);
     border: 1px solid rgba(93, 202, 165, 0.15);
     padding: 4px 12px;
@@ -879,7 +879,7 @@ img {
 .footer-quote {
     font-family: "IM Fell English", serif;
     font-style: italic;
-    font-size: 14px;
+    font-size: 17px;
     color: var(--text-muted);
     max-width: 600px;
     margin: 0 auto 0.8rem;
@@ -887,7 +887,7 @@ img {
 
 .footer-sig {
     font-family: "JetBrains Mono", monospace;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-muted);
     letter-spacing: 2px;
 }
