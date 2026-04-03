@@ -1,59 +1,73 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 interface Props {
-  title: string;
-  description?: string;
-  ogImage?: string;
+    title: string;
+    description?: string;
+    ogImage?: string;
 }
 
-const { title, description = "Alone among systems — offensive security research by Solitär", ogImage } = Astro.props;
+const {
+    title,
+    description = "Alone among systems — offensive security research by Solitär",
+    ogImage,
+} = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        {ogImage && <meta property="og:image" content={ogImage} />}
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
-  </head>
-  <body>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <title>{title}</title>
+    </head>
+    <body>
+        <nav class="nav-bar">
+            <a href="/" class="nav-logo">0xSolitar</a>
+            <ul class="nav-links">
+                <li>
+                    <a
+                        href="/"
+                        class={Astro.url.pathname === "/" ? "active" : ""}
+                        >Grimoire</a>
+                </li>
+                <li>
+                    <a
+                        href="/archive"
+                        class={Astro.url.pathname.startsWith("/archive")
+                            ? "active"
+                            : ""}>Archive</a>
+                </li>
+                <li>
+                    <a
+                        href="/about"
+                        class={Astro.url.pathname === "/about" ? "active" : ""}
+                        >About</a>
+                </li>
+            </ul>
+        </nav>
 
-    <nav class="nav-bar">
-      <a href="/" class="nav-logo">0xSolitar</a>
-      <ul class="nav-links">
-        <li><a href="/" class={Astro.url.pathname === '/' ? 'active' : ''}>Grimoire</a></li>
-        <li><a href="/archive" class={Astro.url.pathname.startsWith('/archive') ? 'active' : ''}>Archive</a></li>
-        <li><a href="/about" class={Astro.url.pathname === '/about' ? 'active' : ''}>About</a></li>
-      </ul>
-    </nav>
+        <slot />
 
-    <slot />
-
-    <footer class="grimoire-footer">
-      <p class="footer-quote">
-        "She appears to take great interest in what humans have built —
-        and understands it, on some conceptual level, better than they do themselves."
-      </p>
-      <p class="footer-sig">0XSOLITAR · SOLITÄR · ALONE AMONG SYSTEMS</p>
-    </footer>
-
-  </body>
+        <footer class="grimoire-footer">
+            <p class="footer-sig">0XSOLITAR · SOLITÄR · ALONE AMONG SYSTEMS</p>
+        </footer>
+    </body>
 </html>

@@ -1,28 +1,29 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('posts', ({ data }) => !data.draft);
-  return posts.map(post => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+    const posts = await getCollection("posts", ({ data }) => !data.draft);
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
 }
 
 const { post } = Astro.props;
 const { Content } = await post.render();
 
 function readingTime(body: string) {
-  return Math.max(1, Math.round(body.trim().split(/\s+/).length / 200));
+    return Math.max(1, Math.round(body.trim().split(/\s+/).length / 200));
 }
 
 function schoolClass(category: string) {
-  const map: Record<string, string> = {
-    'Malware': 'school-malware',
-    'Windows Internals': 'school-internals',
-  };
-  return map[category] ?? 'school-default';
+    const map: Record<string, string> = {
+        Malware: "school-malware",
+        "Windows Internals": "school-internals",
+    };
+    return map[category] ?? "school-default";
 }
 
 const minutes = readingTime(post.body);
@@ -30,55 +31,62 @@ const dateStr = post.data.published.toISOString().slice(0, 10);
 ---
 
 <Base
-  title={`${post.data.title} — Solitär Grimoire`}
-  description={post.data.description}
+    title={`${post.data.title} — Solitär Grimoire`}
+    description={post.data.description}
 >
+    <div class="article-wrapper">
+        <a href="/" class="article-back">← Back to grimoire</a>
 
-  <div class="article-wrapper">
+        <header class="article-header">
+            <div class="article-meta">
+                <span class="spell-date">{dateStr}</span>
+                <span class={`spell-school ${schoolClass(post.data.category)}`}>
+                    {post.data.category}
+                </span>
+                <div class="spell-tags-inline">
+                    {
+                        post.data.tags.map((tag) => (
+                            <span class="spell-tag-inline">{tag}</span>
+                        ))
+                    }
+                </div>
+                <span class="spell-stats" style="margin-left: auto;">
+                    <span>{minutes} min read</span>
+                </span>
+            </div>
 
-    <a href="/" class="article-back">← Back to grimoire</a>
+            <h1 class="article-title">{post.data.title}</h1>
 
-    <header class="article-header">
-      <div class="article-meta">
-        <span class="spell-date">{dateStr}</span>
-        <span class={`spell-school ${schoolClass(post.data.category)}`}>
-          {post.data.category}
-        </span>
-        <div class="spell-tags-inline">
-          {post.data.tags.map(tag => (
-            <span class="spell-tag-inline">{tag}</span>
-          ))}
+            {
+                post.data.description && (
+                    <p class="article-description">{post.data.description}</p>
+                )
+            }
+
+            {
+                post.data.image && (
+                    <Image
+                        src={post.data.image}
+                        alt={post.data.title}
+                        class="article-cover"
+                    />
+                )
+            }
+        </header>
+
+        <div class="prose">
+            <Content />
         </div>
-        <span class="spell-stats" style="margin-left: auto;">
-          <span>{minutes} min read</span>
-        </span>
-      </div>
 
-      <h1 class="article-title">{post.data.title}</h1>
+        <div class="rune-divider" style="margin-top: 3rem;">
+            <span>end of inscription</span>
+        </div>
 
-      {post.data.description && (
-        <p class="article-description">{post.data.description}</p>
-      )}
-
-      {post.data.image && (
-        <img
-          src={post.data.image}
-          alt={post.data.title}
-          class="article-cover"
-        />
-      )}
-    </header>
-
-    <div class="prose">
-      <Content />
+        <a
+            href="/"
+            class="article-back"
+            style="margin-top: 1rem; display: inline-flex;"
+            >← Back to grimoire</a
+        >
     </div>
-
-    <div class="rune-divider" style="margin-top: 3rem;">
-      <span>end of inscription</span>
-    </div>
-
-    <a href="/" class="article-back" style="margin-top: 1rem; display: inline-flex;">← Back to grimoire</a>
-
-  </div>
-
 </Base>
