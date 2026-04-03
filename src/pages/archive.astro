@@ -1,0 +1,107 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+const categoryFilter = Astro.url.searchParams.get('category') ?? '';
+const tagFilter = Astro.url.searchParams.get('tag') ?? '';
+
+const filtered = allPosts.filter(post => {
+  if (categoryFilter && post.data.category !== categoryFilter) return false;
+  if (tagFilter && !post.data.tags.includes(tagFilter)) return false;
+  return true;
+});
+
+const allCategories = [...new Set(allPosts.map(p => p.data.category))];
+const allTags = [...new Set(allPosts.flatMap(p => p.data.tags))];
+
+function schoolClass(category: string) {
+  const map: Record<string, string> = {
+    'Malware': 'school-malware',
+    'Windows Internals': 'school-internals',
+  };
+  return map[category] ?? 'school-default';
+}
+
+function readingTime(body: string) {
+  return Math.max(1, Math.round(body.trim().split(/\s+/).length / 200));
+}
+
+const activeLabel = categoryFilter || tagFilter
+  ? (categoryFilter || `#${tagFilter}`)
+  : 'All Inscriptions';
+---
+
+<Base title="Archive — Solitär Grimoire">
+
+  <div class="article-wrapper">
+
+    <a href="/" class="article-back">← Back to grimoire</a>
+
+    <div style="margin-bottom: 2rem;">
+      <h1 style="font-family: 'Cinzel Decorative', serif; font-size: 22px; color: var(--text-primary); margin-bottom: 1.5rem; letter-spacing: 2px;">
+        Archive
+      </h1>
+
+      <!-- Category filters -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;">
+        <a
+          href="/archive"
+          class={`tag${!categoryFilter && !tagFilter ? ' active-filter' : ''}`}
+          style={!categoryFilter && !tagFilter ? 'color: var(--teal-bright); border-color: var(--border-rune); background: var(--teal-ghost);' : ''}
+        >all</a>
+        {allCategories.map(cat => (
+          <a
+            href={`/archive?category=${encodeURIComponent(cat)}`}
+            class="tag"
+            style={categoryFilter === cat ? 'color: var(--teal-bright); border-color: var(--border-rune); background: var(--teal-ghost);' : ''}
+          >{cat}</a>
+        ))}
+      </div>
+
+      <!-- Tag filters -->
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        {allTags.map(tag => (
+          <a
+            href={`/archive?tag=${encodeURIComponent(tag)}`}
+            class="tag"
+            style={tagFilter === tag ? 'color: var(--teal-bright); border-color: var(--border-rune); background: var(--teal-ghost);' : ''}
+          >#{tag}</a>
+        ))}
+      </div>
+    </div>
+
+    <p class="section-heading">{activeLabel} — {filtered.length} spell{filtered.length !== 1 ? 's' : ''}</p>
+
+    {filtered.length === 0 && (
+      <p style="font-family: 'IM Fell English', serif; font-style: italic; color: var(--text-muted);">
+        No inscriptions found for this filter.
+      </p>
+    )}
+
+    {filtered.map(post => {
+      const minutes = readingTime(post.body);
+      return (
+        <a href={`/posts/${post.slug}`} class="spell-entry" style="display: block;">
+          <div class="spell-meta">
+            <span class="spell-date">{post.data.published.toISOString().slice(0, 10)}</span>
+            <span class={`spell-school ${schoolClass(post.data.category)}`}>{post.data.category}</span>
+            <div class="spell-tags-inline">
+              {post.data.tags.map(tag => <span class="spell-tag-inline">{tag}</span>)}
+            </div>
+          </div>
+          <h2 class="spell-title">{post.data.title}</h2>
+          {post.data.description && <p class="spell-incantation">{post.data.description}</p>}
+          <div class="spell-footer">
+            <span class="spell-read">Read spell →</span>
+            <span class="spell-stats"><span>{minutes} min</span></span>
+          </div>
+        </a>
+      );
+    })}
+
+  </div>
+
+</Base>

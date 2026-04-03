@@ -1,0 +1,67 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="About — Solitär Grimoire"
+  description="About the author behind the Solitär Grimoire — offensive security researcher."
+>
+
+  <div class="about-wrapper">
+
+    <a href="/" class="article-back">← Back to grimoire</a>
+
+    <div class="about-header">
+      <img src="/pfp.png" alt="Solitär" class="about-avatar" />
+      <div class="about-identity">
+        <!-- Replace "Your Name" with your actual name -->
+        <h1>Your Name</h1>
+        <p class="handle">0xSolitar</p>
+        <p class="tagline">Alone among systems</p>
+        <div class="about-links">
+          <!-- Replace hrefs with your actual profiles -->
+          <a href="https://github.com/0xsolitar" class="about-link" target="_blank">GitHub</a>
+          <a href="https://linkedin.com/in/yourprofile" class="about-link" target="_blank">LinkedIn</a>
+          <a href="https://twitter.com/yourhandle" class="about-link" target="_blank">Twitter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <!--
+        Write your about section here in plain markdown / HTML.
+        Who you are, what you research, what this blog is for.
+        Example below — replace it entirely.
+      -->
+      <p>
+        I am an offensive security researcher focused on Windows internals,
+        process injection, and defense evasion. This grimoire documents
+        techniques I have studied, built, and broken in the lab —
+        written to be useful to both red teamers and defenders.
+      </p>
+
+      <p>
+        Every article is based on something I observed myself:
+        a debugger output, code I wrote, a behavior I tested.
+        That is what separates a blog from a resume.
+      </p>
+
+      <h2>Research Focus</h2>
+      <ul>
+        <li>Process Injection &amp; Memory Manipulation</li>
+        <li>Defense Evasion — API unhooking, direct syscalls, AMSI bypass</li>
+        <li>Initial Access — phishing delivery, LOLBins, payload staging</li>
+        <li>C2 architecture and malleable communication</li>
+        <li>Malware reverse engineering</li>
+      </ul>
+
+      <h2>Tools I work with</h2>
+      <p>
+        WinDbg, x64dbg, Process Hacker, Ghidra, Sysinternals Suite,
+        Sysmon, Wireshark, FlareVM — and whatever the technique demands.
+      </p>
+    </div>
+
+  </div>
+
+</Base>
