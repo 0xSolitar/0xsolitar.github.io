@@ -46,6 +46,41 @@ const postsJson = JSON.stringify(
             Archive
         </h1>
 
+        <!-- Search bar -->
+        <div style="position: relative; margin-bottom: 1.5rem;">
+            <input
+                id="archive-search"
+                type="text"
+                placeholder="search inscriptions…"
+                autocomplete="off"
+                style="
+                    width: 100%;
+                    box-sizing: border-box;
+                    background: var(--bg-card, rgba(255,255,255,0.03));
+                    border: 1px solid var(--border-rune, rgba(255,255,255,0.1));
+                    border-radius: 6px;
+                    padding: 0.55rem 2.4rem 0.55rem 0.85rem;
+                    color: var(--text-primary);
+                    font-family: var(--font-mono, monospace);
+                    font-size: 0.85rem;
+                    outline: none;
+                    transition: border-color 0.2s ease;
+                "
+            />
+            <span
+                style="
+                position: absolute;
+                right: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 0.8rem;
+                pointer-events: none;
+            "
+                >⌕</span
+            >
+        </div>
+
         <!-- Category filters -->
         <div
             id="category-filters"
@@ -94,6 +129,9 @@ const postsJson = JSON.stringify(
 <script define:vars={{ postsJson }}>
     const posts = JSON.parse(postsJson);
 
+    const searchInput = document.getElementById("archive-search");
+    let searchQuery = "";
+
     function getParams() {
         const p = new URLSearchParams(window.location.search);
         return { category: p.get("category") ?? "", tag: p.get("tag") ?? "" };
@@ -115,19 +153,29 @@ const postsJson = JSON.stringify(
             btn.style.background = active ? "var(--teal-ghost)" : "";
         });
 
-        // Filter posts
+        // Filter posts — category/tag AND search query
+        const q = searchQuery.trim().toLowerCase();
         const filtered = posts.filter((p) => {
             if (category && p.category !== category) return false;
             if (tag && !p.tags.includes(tag)) return false;
+            if (q) {
+                const haystack = [
+                    p.title,
+                    p.description ?? "",
+                    p.category,
+                    ...p.tags,
+                ]
+                    .join(" ")
+                    .toLowerCase();
+                if (!haystack.includes(q)) return false;
+            }
             return true;
         });
 
-        // Update label
         const label = category || (tag ? `#${tag}` : "All Inscriptions");
         document.getElementById("archive-label").textContent =
             `${label} — ${filtered.length} spell${filtered.length !== 1 ? "s" : ""}`;
 
-        // Render posts
         const list = document.getElementById("spell-list");
         if (filtered.length === 0) {
             list.innerHTML = `<p style="font-family: 'IM Fell English', serif; font-style: italic; color: var(--text-muted);">No inscriptions found for this filter.</p>`;
@@ -157,7 +205,24 @@ const postsJson = JSON.stringify(
             .join("");
     }
 
-    // Wire up filter buttons — update URL and re-render without page reload
+    searchInput.addEventListener("input", () => {
+        searchQuery = searchInput.value;
+        render();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "/" && document.activeElement !== searchInput) {
+            e.preventDefault();
+            searchInput.focus();
+        }
+        if (e.key === "Escape" && document.activeElement === searchInput) {
+            searchInput.value = "";
+            searchQuery = "";
+            render();
+            searchInput.blur();
+        }
+    });
+
     document.querySelectorAll(".filter-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
             const type = btn.dataset.type;
@@ -170,9 +235,17 @@ const postsJson = JSON.stringify(
         });
     });
 
-    // Handle browser back/forward
     window.addEventListener("popstate", render);
-
-    // Initial render on page load
     render();
 </script>
+
+<style>
+    #archive-search:focus {
+        border-color: var(--teal-bright, #2dd4bf) !important;
+    }
+
+    #archive-search::placeholder {
+        color: var(--text-muted);
+        opacity: 0.6;
+    }
+</style>
