@@ -39,6 +39,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <title>{title}</title>
     </head>
     <body>
+        <div id="scroll-progress"></div>
         <nav class="nav-bar">
             <a href="/" class="nav-logo">0xSolitar</a>
             <ul class="nav-links">
@@ -70,6 +71,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         <slot />
 
         <footer class="grimoire-footer">
+            <p class="footer-ornament">· · ·</p>
             <p class="footer-sig">0XSOLITAR · SOLITÄR · ALONE AMONG SYSTEMS</p>
         </footer>
 
@@ -100,31 +102,83 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         </style>
 
         <script>
+            // ── Lightbox ──────────────────────────────────────────────
             const lightbox = document.getElementById("lightbox");
-            const lightboxImg = document.getElementById("lightbox-img");
+            const lightboxImg = document.getElementById(
+                "lightbox-img",
+            ) as HTMLImageElement;
 
-            // Apply to all images inside .prose (post content only)
             document.querySelectorAll(".prose img").forEach((img) => {
-                img.style.cursor = "zoom-in";
+                (img as HTMLElement).style.cursor = "zoom-in";
                 img.addEventListener("click", () => {
-                    lightboxImg.src = img.src;
-                    lightboxImg.alt = img.alt;
-                    lightbox.style.display = "flex";
+                    lightboxImg.src = (img as HTMLImageElement).src;
+                    lightboxImg.alt = (img as HTMLImageElement).alt;
+                    lightbox!.style.display = "flex";
                 });
             });
-
-            // Click backdrop or image to close
-            lightbox.addEventListener("click", () => {
-                lightbox.style.display = "none";
+            lightbox!.addEventListener("click", () => {
+                lightbox!.style.display = "none";
                 lightboxImg.src = "";
             });
-
-            // ESC to close
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape") {
-                    lightbox.style.display = "none";
+                    lightbox!.style.display = "none";
                     lightboxImg.src = "";
                 }
+            });
+
+            // ── Sticky nav shadow on scroll ───────────────────────────
+            const nav = document.querySelector(".nav-bar");
+            window.addEventListener(
+                "scroll",
+                () => {
+                    if (window.scrollY > 8) {
+                        nav?.classList.add("scrolled");
+                    } else {
+                        nav?.classList.remove("scrolled");
+                    }
+                },
+                { passive: true },
+            );
+
+            // ── Scroll progress bar ───────────────────────────────────
+            const progressBar = document.getElementById("scroll-progress");
+            if (progressBar) {
+                window.addEventListener(
+                    "scroll",
+                    () => {
+                        const scrollTop = window.scrollY;
+                        const docHeight =
+                            document.documentElement.scrollHeight -
+                            window.innerHeight;
+                        const pct =
+                            docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                        progressBar.style.width = pct + "%";
+                    },
+                    { passive: true },
+                );
+            }
+
+            // ── Copy buttons on code blocks ───────────────────────────
+            document.querySelectorAll(".prose pre").forEach((pre) => {
+                const btn = document.createElement("button");
+                btn.className = "copy-btn";
+                btn.textContent = "copy";
+                btn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const code = pre.querySelector("code");
+                    const text = code?.innerText ?? pre.textContent ?? "";
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        btn.textContent = "copied!";
+                        btn.classList.add("copied");
+                        setTimeout(() => {
+                            btn.textContent = "copy";
+                            btn.classList.remove("copied");
+                        }, 2000);
+                    } catch {}
+                });
+                pre.appendChild(btn);
             });
         </script>
     </body>

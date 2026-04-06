@@ -48,6 +48,17 @@ body {
     overflow-x: hidden;
 }
 
+/* Grain texture overlay */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+}
+
 /* Ambient teal glow at top */
 body::after {
     content: "";
@@ -64,6 +75,22 @@ body::after {
     );
     pointer-events: none;
     z-index: 0;
+}
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+
+#scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--teal-dim), var(--teal-bright));
+    z-index: 9998;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(93, 202, 165, 0.5);
 }
 
 a {
@@ -87,8 +114,19 @@ img {
     justify-content: space-between;
     padding: 1rem 2rem;
     border-bottom: 1px solid rgba(93, 202, 165, 0.1);
-    position: relative;
-    z-index: 10;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(17, 16, 20, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+        border-color 0.3s,
+        box-shadow 0.3s;
+}
+.nav-bar.scrolled {
+    border-color: rgba(93, 202, 165, 0.18);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .nav-logo {
@@ -119,10 +157,26 @@ img {
     letter-spacing: 2px;
     text-transform: uppercase;
     transition: color 0.2s;
+    position: relative;
+    padding-bottom: 2px;
+}
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--teal-bright);
+    transition: width 0.25s ease;
 }
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--teal-bright);
+}
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%;
 }
 
 /* ============================================================
@@ -399,6 +453,38 @@ img {
     text-decoration: none;
     color: inherit;
     overflow: hidden;
+    /* scroll reveal */
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal-entry 0.5s ease forwards;
+}
+@keyframes reveal-entry {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* stagger each card */
+.spell-entry:nth-child(1) {
+    animation-delay: 0.05s;
+}
+.spell-entry:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.spell-entry:nth-child(3) {
+    animation-delay: 0.15s;
+}
+.spell-entry:nth-child(4) {
+    animation-delay: 0.2s;
+}
+.spell-entry:nth-child(5) {
+    animation-delay: 0.25s;
+}
+.spell-entry:nth-child(6) {
+    animation-delay: 0.3s;
+}
+.spell-entry:nth-child(7) {
+    animation-delay: 0.35s;
 }
 .spell-entry::before {
     content: "";
@@ -727,8 +813,9 @@ img {
 
 /* Code blocks */
 .prose pre {
-    background: #0a0a0c !important;
+    background: #0d0b0f !important;
     border: 1px solid rgba(93, 202, 165, 0.15);
+    border-left: 3px solid var(--teal-dim);
     border-radius: 2px;
     padding: 1.25rem 1.5rem;
     overflow-x: auto;
@@ -736,6 +823,35 @@ img {
     font-size: 15px;
     line-height: 1.7;
     white-space: pre;
+    position: relative;
+}
+
+/* Copy button */
+.prose pre .copy-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: rgba(93, 202, 165, 0.06);
+    border: 1px solid rgba(93, 202, 165, 0.15);
+    border-radius: 2px;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+.prose pre .copy-btn:hover {
+    color: var(--teal-bright);
+    border-color: var(--border-rune);
+    background: var(--teal-ghost);
+}
+.prose pre .copy-btn.copied {
+    color: var(--teal-bright);
+    border-color: var(--teal-dim);
 }
 
 .prose code {
@@ -877,6 +993,14 @@ img {
     margin-top: 2rem;
 }
 
+.footer-ornament {
+    font-size: 18px;
+    color: var(--teal-dim);
+    letter-spacing: 12px;
+    margin-bottom: 0.8rem;
+    opacity: 0.6;
+}
+
 .footer-quote {
     font-family: "IM Fell English", serif;
     font-style: italic;
@@ -895,16 +1019,30 @@ img {
 
 .admonition {
     border-left: 3px solid;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem 0.75rem 1.1rem;
     margin: 1.5rem 0;
     border-radius: 0 4px 4px 0;
     font-size: 0.9rem;
+    position: relative;
 }
 
 .admonition-important {
     border-color: #f59e0b;
-    background: rgba(245, 158, 11, 0.08);
-    color: #fcd34d;
+    background: rgba(245, 158, 11, 0.06);
+    color: #e2c97e;
+}
+
+.admonition-important::before {
+    content: "⚠ important";
+    display: block;
+    font-family: "Cinzel", serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #f59e0b;
+    margin-bottom: 0.4rem;
+    opacity: 0.85;
 }
 
 /* ============================================================

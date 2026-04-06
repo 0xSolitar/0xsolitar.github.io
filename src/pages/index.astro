@@ -1,149 +1,203 @@
 ---
-import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
 
 // Fetch all non-draft posts, sorted newest first
-const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+const allPosts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
+);
 
 // Derive categories with counts
 const categoryCounts: Record<string, number> = {};
 for (const post of allPosts) {
-  categoryCounts[post.data.category] = (categoryCounts[post.data.category] || 0) + 1;
+    categoryCounts[post.data.category] =
+        (categoryCounts[post.data.category] || 0) + 1;
 }
 
 // Derive unique tags
-const allTags = [...new Set(allPosts.flatMap(p => p.data.tags))];
+const allTags = [...new Set(allPosts.flatMap((p) => p.data.tags))];
 
 // Estimate reading time (average 200 wpm)
 function readingTime(body: string) {
-  const words = body.trim().split(/\s+/).length;
-  return Math.max(1, Math.round(words / 200));
+    const words = body.trim().split(/\s+/).length;
+    return Math.max(1, Math.round(words / 200));
 }
 
 // Is a post "new" — published within the last 14 days
 function isNew(date: Date) {
-  return (Date.now() - date.valueOf()) < 14 * 24 * 60 * 60 * 1000;
+    return Date.now() - date.valueOf() < 14 * 24 * 60 * 60 * 1000;
 }
 
 // School CSS class from category name
 function schoolClass(category: string) {
-  const map: Record<string, string> = {
-    'Malware': 'school-malware',
-    'Windows Internals': 'school-internals',
-  };
-  return map[category] ?? 'school-default';
+    const map: Record<string, string> = {
+        Malware: "school-malware",
+        "Windows Internals": "school-internals",
+    };
+    return map[category] ?? "school-default";
 }
 
 const newestSlug = allPosts[0]?.slug;
 ---
 
 <Base title="The Solitär Grimoire">
+    <header class="grimoire-header">
+        <div class="corner-ornament tl"></div>
+        <div class="corner-ornament tr"></div>
 
-  <header class="grimoire-header">
-    <div class="corner-ornament tl"></div>
-    <div class="corner-ornament tr"></div>
+        <!-- Sigil -->
+        <svg
+            class="header-sigil"
+            viewBox="0 0 56 56"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <circle
+                cx="28"
+                cy="28"
+                r="26"
+                stroke="rgba(93,202,165,0.3)"
+                stroke-width="0.75"
+                stroke-dasharray="4 3"></circle>
+            <circle
+                cx="28"
+                cy="28"
+                r="20"
+                stroke="rgba(93,202,165,0.15)"
+                stroke-width="0.75"></circle>
+            <polygon
+                points="28,6 50,42 6,42"
+                stroke="rgba(93,202,165,0.35)"
+                stroke-width="0.75"
+                fill="none"></polygon>
+            <polygon
+                points="28,50 6,14 50,14"
+                stroke="rgba(201,168,76,0.2)"
+                stroke-width="0.75"
+                fill="none"></polygon>
+            <circle cx="28" cy="28" r="3.5" fill="rgba(93,202,165,0.7)"
+            ></circle>
+            <circle
+                cx="28"
+                cy="28"
+                r="6"
+                stroke="rgba(93,202,165,0.4)"
+                stroke-width="0.75"
+                fill="none"></circle>
+        </svg>
 
-    <!-- Sigil -->
-    <svg class="header-sigil" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="28" cy="28" r="26" stroke="rgba(93,202,165,0.3)" stroke-width="0.75" stroke-dasharray="4 3"/>
-      <circle cx="28" cy="28" r="20" stroke="rgba(93,202,165,0.15)" stroke-width="0.75"/>
-      <polygon points="28,6 50,42 6,42" stroke="rgba(93,202,165,0.35)" stroke-width="0.75" fill="none"/>
-      <polygon points="28,50 6,14 50,14" stroke="rgba(201,168,76,0.2)" stroke-width="0.75" fill="none"/>
-      <circle cx="28" cy="28" r="3.5" fill="rgba(93,202,165,0.7)"/>
-      <circle cx="28" cy="28" r="6" stroke="rgba(93,202,165,0.4)" stroke-width="0.75" fill="none"/>
-    </svg>
-
-    <div class="profile-ring">
-      <img src="/pfp.png" alt="Solitär" />
-    </div>
-
-    <p class="grimoire-eyebrow">The</p>
-    <h1 class="grimoire-title"><em>Solitär</em> Grimoire</h1>
-    <p class="grimoire-subtitle">Alone among systems — documenting what humans have built, so it may be undone</p>
-
-    <div class="rune-divider">
-      <span>codex · offensive · windows</span>
-    </div>
-  </header>
-
-  <div class="home-layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <p class="sidebar-section-title">Schools of Magic</p>
-
-      {Object.entries(categoryCounts).map(([cat, count]) => (
-        <div class="codex-category">
-          <a href={`/archive?category=${encodeURIComponent(cat)}`} class="category-name">
-            {cat}
-            <span class="category-count">{count}</span>
-          </a>
+        <div class="profile-ring">
+            <img src="/pfp.png" alt="Solitär" />
         </div>
-      ))}
 
-      <div class="rune-divider" style="margin: 1rem 0;"></div>
+        <p class="grimoire-eyebrow">The</p>
+        <h1 class="grimoire-title"><em>Solitär</em> Grimoire</h1>
+        <p class="grimoire-subtitle">
+            Alone among systems — documenting what humans have built, so it may
+            be undone
+        </p>
 
-      <p class="sidebar-section-title">Rune Index</p>
-      <div class="tag-cloud">
-        {allTags.map(tag => (
-          <a href={`/archive?tag=${encodeURIComponent(tag)}`} class="tag">{tag}</a>
-        ))}
-      </div>
-    </aside>
+        <div class="rune-divider">
+            <span>codex · offensive · windows</span>
+        </div>
+    </header>
 
-    <!-- SPELL ENTRIES -->
-    <main class="main-content">
-      <p class="section-heading">Recent Incantations</p>
+    <div class="home-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <p class="sidebar-section-title">Schools of Magic</p>
 
-      {allPosts.map((post) => {
-        const minutes = readingTime(post.body);
-        const words = post.body.trim().split(/\s+/).length;
-        const newest = post.slug === newestSlug;
-        const newPost = isNew(post.data.published);
+            {
+                Object.entries(categoryCounts).map(([cat, count]) => (
+                    <div class="codex-category">
+                        <a
+                            href={`/archive?category=${encodeURIComponent(cat)}`}
+                            class="category-name"
+                        >
+                            {cat}
+                            <span class="category-count">{count}</span>
+                        </a>
+                    </div>
+                ))
+            }
 
-        return (
-          <a
-            href={`/posts/${post.slug}`}
-            class={`spell-entry${newest ? ' featured' : ''}`}
-          >
-            <div class="spell-meta">
-              <span class="spell-date">
-                {post.data.published.toISOString().slice(0, 10)}
-              </span>
-              <span class={`spell-school ${schoolClass(post.data.category)}`}>
-                {post.data.category}
-              </span>
-              {newPost && <span class="new-label">new</span>}
-              <div class="spell-tags-inline">
-                {post.data.tags.map(tag => (
-                  <span class="spell-tag-inline">{tag}</span>
-                ))}
-              </div>
+            <div class="rune-divider" style="margin: 1rem 0;"></div>
+
+            <p class="sidebar-section-title">Rune Index</p>
+            <div class="tag-cloud">
+                {
+                    allTags.map((tag) => (
+                        <a
+                            href={`/archive?tag=${encodeURIComponent(tag)}`}
+                            class="tag"
+                        >
+                            {tag}
+                        </a>
+                    ))
+                }
             </div>
+        </aside>
 
-            <h2 class="spell-title">{post.data.title}</h2>
+        <!-- SPELL ENTRIES -->
+        <main class="main-content">
+            <p class="section-heading">Recent Incantations</p>
 
-            {post.data.description && (
-              <p class="spell-incantation">{post.data.description}</p>
-            )}
+            {
+                allPosts.map((post) => {
+                    const minutes = readingTime(post.body);
+                    const words = post.body.trim().split(/\s+/).length;
+                    const newest = post.slug === newestSlug;
+                    const newPost = isNew(post.data.published);
 
-            <div class="spell-footer">
-              <span class="spell-read">Read spell →</span>
-              <div class="spell-stats">
-                <span>{words} words</span>
-                <span>{minutes} min</span>
-              </div>
+                    return (
+                        <a
+                            href={`/posts/${post.slug}`}
+                            class={`spell-entry${newest ? " featured" : ""}`}
+                        >
+                            <div class="spell-meta">
+                                <span class="spell-date">
+                                    {post.data.published
+                                        .toISOString()
+                                        .slice(0, 10)}
+                                </span>
+                                <span
+                                    class={`spell-school ${schoolClass(post.data.category)}`}
+                                >
+                                    {post.data.category}
+                                </span>
+                                {newPost && <span class="new-label">new</span>}
+                                <div class="spell-tags-inline">
+                                    {post.data.tags.map((tag) => (
+                                        <span class="spell-tag-inline">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <h2 class="spell-title">{post.data.title}</h2>
+
+                            {post.data.description && (
+                                <p class="spell-incantation">
+                                    {post.data.description}
+                                </p>
+                            )}
+
+                            <div class="spell-footer">
+                                <span class="spell-read">Read spell →</span>
+                                <div class="spell-stats">
+                                    <span>{words} words</span>
+                                    <span>{minutes} min</span>
+                                </div>
+                            </div>
+                        </a>
+                    );
+                })
+            }
+
+            <div class="rune-divider">
+                <span>end of current inscriptions</span>
             </div>
-          </a>
-        );
-      })}
-
-      <div class="rune-divider">
-        <span>end of current inscriptions</span>
-      </div>
-    </main>
-
-  </div>
-
+        </main>
+    </div>
 </Base>
