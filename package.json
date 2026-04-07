@@ -8,7 +8,6 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.2",
     "astro": "4.16.18",
     "remark-directive": "^4.0.0",
     "unist-util-visit": "^5.1.0"

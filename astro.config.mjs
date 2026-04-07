@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 
-import sitemap from "@astrojs/sitemap";
+// import sitemap from "@astrojs/sitemap";
 
 function remarkAdmonitions() {
   return (tree) => {
@@ -27,5 +27,5 @@ export default defineConfig({
     remarkPlugins: [remarkDirective, remarkAdmonitions],
   },
 
-  integrations: [sitemap()]
+  // integrations: [sitemap()]
 });
