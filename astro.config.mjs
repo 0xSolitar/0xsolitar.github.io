@@ -2,6 +2,8 @@ import { defineConfig } from "astro/config";
 import remarkDirective from "remark-directive";
 import { visit } from "unist-util-visit";
 
+import sitemap from "@astrojs/sitemap";
+
 function remarkAdmonitions() {
   return (tree) => {
     visit(tree, (node) => {
@@ -16,6 +18,7 @@ function remarkAdmonitions() {
 export default defineConfig({
   site: "https://0xsolitar.github.io",
   output: "static",
+
   markdown: {
     shikiConfig: {
       theme: "one-dark-pro",
@@ -23,4 +26,6 @@ export default defineConfig({
     },
     remarkPlugins: [remarkDirective, remarkAdmonitions],
   },
+
+  integrations: [sitemap()]
 });
