@@ -3,8 +3,8 @@ title: Process Hollowing
 published: 2026-04-01
 description: "Wearing Another Process's Skin"
 image: "./cover.png"
-tags: ["C++", "Win32", "Evasion"]
-category: Malware
+tags: ["C++", "Win32", "malware"]
+category: Injection
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: Classic DLL Injection
 published: 2026-03-30
 description: "A brief look at the classic injection technique"
 tags: ["C++", "Win32", "injection", "malware"]
-category: Malware
+category: Injection
 draft: false
 ---
 
