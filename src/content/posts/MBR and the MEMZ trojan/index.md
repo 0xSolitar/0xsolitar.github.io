@@ -6,6 +6,7 @@ image: "./nyan_cat.gif"
 tags: ["C++"]
 category: Malware
 draft: false
+featured: true
 ---
 
 > Cover image: __The Nyan Cat__

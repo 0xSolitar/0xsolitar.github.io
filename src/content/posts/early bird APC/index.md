@@ -4,7 +4,9 @@ published: 2026-04-11
 description: "From Meterpreter to Sliver + Donut"
 tags: ["C++", "Win32", "Sliver", "Donut", "malware"]
 category: Injection
+image: "./cover.jpg"
 draft: false
+featured: true
 ---
 
 ## Requirement

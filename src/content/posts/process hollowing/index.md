@@ -6,6 +6,7 @@ image: "./cover.png"
 tags: ["C++", "Win32", "malware"]
 category: Injection
 draft: false
+featured: true
 ---
 
 > A basic understanding of PE structure is required for this lab. I highly recommend reading this deep dive by 0xRick: [Source](https://0xrick.github.io/win-internals/pe1/)  

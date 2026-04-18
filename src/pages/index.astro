@@ -7,16 +7,6 @@ const allPosts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
     (a, b) => b.data.published.valueOf() - a.data.published.valueOf(),
 );
 
-// Derive categories with counts
-const categoryCounts: Record<string, number> = {};
-for (const post of allPosts) {
-    categoryCounts[post.data.category] =
-        (categoryCounts[post.data.category] || 0) + 1;
-}
-
-// Derive unique tags
-const allTags = [...new Set(allPosts.flatMap((p) => p.data.tags))];
-
 // Estimate reading time (average 200 wpm)
 function readingTime(body: string) {
     const words = body.trim().split(/\s+/).length;
@@ -38,6 +28,7 @@ function schoolClass(category: string) {
 }
 
 const newestSlug = allPosts[0]?.slug;
+const featuredPosts = allPosts.filter((p) => p.data.featured);
 ---
 
 <Base title="The Solitär Grimoire">
@@ -102,98 +93,116 @@ const newestSlug = allPosts[0]?.slug;
         </div>
     </header>
 
-    <div class="home-layout">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <p class="sidebar-section-title">Schools of Magic</p>
-
-            {
-                Object.entries(categoryCounts).map(([cat, count]) => (
-                    <div class="codex-category">
-                        <a
-                            href={`/archive?category=${encodeURIComponent(cat)}`}
-                            class="category-name"
-                        >
-                            {cat}
-                            <span class="category-count">{count}</span>
-                        </a>
-                    </div>
-                ))
-            }
-
-            <div class="rune-divider" style="margin: 1rem 0;"></div>
-
-            <p class="sidebar-section-title">Rune Index</p>
-            <div class="tag-cloud">
-                {
-                    allTags.map((tag) => (
-                        <a
-                            href={`/archive?tag=${encodeURIComponent(tag)}`}
-                            class="tag"
-                        >
-                            {tag}
-                        </a>
-                    ))
-                }
+    {featuredPosts.length > 0 && (
+        <section class="featured-section">
+            <div class="featured-header">
+                <p class="section-heading" style="margin-bottom:0">Featured Spells</p>
+                <div class="featured-arrows">
+                    <button class="feat-arrow" id="feat-prev" aria-label="Previous">&#8249;</button>
+                    <button class="feat-arrow" id="feat-next" aria-label="Next">&#8250;</button>
+                </div>
             </div>
-        </aside>
+            <div class="featured-track-wrapper">
+                <div class="featured-track" id="feat-track">
+                    {featuredPosts.map((post) => (
+                        <a href={`/posts/${post.slug}`} class="feat-card">
+                            {post.data.image
+                                ? <img
+                                    src={post.data.image.src}
+                                    alt={post.data.title}
+                                    class="feat-card-img"
+                                  />
+                                : <div class="feat-card-img feat-card-img--placeholder">
+                                    <svg viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg" width="48" opacity="0.15">
+                                        <polygon points="40,8 72,56 8,56" stroke="rgba(93,202,165,0.6)" stroke-width="1.5" fill="none"/>
+                                        <circle cx="40" cy="36" r="6" fill="rgba(93,202,165,0.4)"/>
+                                    </svg>
+                                  </div>
+                            }
+                            <div class="feat-card-body">
+                                <div class="spell-meta-top" style="margin-bottom:0.4rem">
+                                    <span class="spell-date">
+                                        {post.data.published.toISOString().slice(0, 10)}
+                                    </span>
+                                    <span class={`spell-school ${schoolClass(post.data.category)}`}>
+                                        {post.data.category}
+                                    </span>
+                                </div>
+                                <h3 class="feat-card-title">{post.data.title}</h3>
+                                {post.data.description && (
+                                    <p class="feat-card-desc">{post.data.description}</p>
+                                )}
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </div>
+        </section>
+    )}
 
-        <!-- SPELL ENTRIES -->
+    <div class="home-layout">
+        <!-- SPELL ENTRIES GRID -->
         <main class="main-content">
             <p class="section-heading">Recent Incantations</p>
 
-            {
-                allPosts.map((post) => {
-                    const minutes = readingTime(post.body);
-                    const words = post.body.trim().split(/\s+/).length;
-                    const newest = post.slug === newestSlug;
-                    const newPost = isNew(post.data.published);
+            <div class="spell-grid">
+                {
+                    allPosts.map((post) => {
+                        const minutes = readingTime(post.body);
+                        const words = post.body.trim().split(/\s+/).length;
+                        const newest = post.slug === newestSlug;
+                        const newPost = isNew(post.data.published);
 
-                    return (
-                        <a
-                            href={`/posts/${post.slug}`}
-                            class={`spell-entry${newest ? " featured" : ""}`}
-                        >
-                            <div class="spell-meta">
-                                <span class="spell-date">
-                                    {post.data.published
-                                        .toISOString()
-                                        .slice(0, 10)}
-                                </span>
-                                <span
-                                    class={`spell-school ${schoolClass(post.data.category)}`}
-                                >
-                                    {post.data.category}
-                                </span>
-                                {newPost && <span class="new-label">new</span>}
-                                <div class="spell-tags-inline">
-                                    {post.data.tags.map((tag) => (
-                                        <span class="spell-tag-inline">
-                                            {tag}
+                        return (
+                            <a
+                                href={`/posts/${post.slug}`}
+                                class={`spell-entry${newest ? " featured" : ""}`}
+                            >
+                                <div class="spell-meta">
+                                    <div class="spell-meta-top">
+                                        <span class="spell-date">
+                                            {post.data.published
+                                                .toISOString()
+                                                .slice(0, 10)}
                                         </span>
-                                    ))}
+                                        <span
+                                            class={`spell-school ${schoolClass(post.data.category)}`}
+                                        >
+                                            {post.data.category}
+                                        </span>
+                                        {newPost && (
+                                            <span class="new-label">new</span>
+                                        )}
+                                    </div>
+                                    <div class="spell-tags-inline">
+                                        {post.data.tags.map((tag) => (
+                                            <span class="spell-tag-inline">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <h2 class="spell-title">{post.data.title}</h2>
+                                <h2 class="spell-title">{post.data.title}</h2>
 
-                            {post.data.description && (
-                                <p class="spell-incantation">
-                                    {post.data.description}
-                                </p>
-                            )}
+                                {post.data.description && (
+                                    <p class="spell-incantation">
+                                        {post.data.description}
+                                    </p>
+                                )}
 
-                            <div class="spell-footer">
-                                <span class="spell-read">Read spell →</span>
-                                <div class="spell-stats">
-                                    <span>{words} words</span>
-                                    <span>{minutes} min</span>
+                                <div class="spell-footer">
+                                    <span class="spell-read">Read spell →</span>
+                                    <div class="spell-stats">
+                                        <span>{words} words</span>
+                                        <span>{minutes} min</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    );
-                })
-            }
+                            </a>
+                        );
+                    })
+                }
+            </div>
 
             <div class="rune-divider">
                 <span>end of current inscriptions</span>
@@ -201,3 +210,31 @@ const newestSlug = allPosts[0]?.slug;
         </main>
     </div>
 </Base>
+
+<script>
+    const track = document.getElementById("feat-track") as HTMLElement | null;
+    const prev  = document.getElementById("feat-prev") as HTMLButtonElement | null;
+    const next  = document.getElementById("feat-next") as HTMLButtonElement | null;
+
+    if (track && prev && next) {
+        const getStep = () => {
+            const card = track.querySelector(".feat-card") as HTMLElement | null;
+            return card ? card.offsetWidth + 24 : 400; // 24 = gap
+        };
+
+        prev.addEventListener("click", () => {
+            track.scrollBy({ left: -getStep(), behavior: "smooth" });
+        });
+        next.addEventListener("click", () => {
+            track.scrollBy({ left: getStep(), behavior: "smooth" });
+        });
+
+        const updateArrows = () => {
+            prev.style.opacity = track.scrollLeft <= 4 ? "0.3" : "1";
+            const maxScroll = track.scrollWidth - track.clientWidth;
+            next.style.opacity = track.scrollLeft >= maxScroll - 4 ? "0.3" : "1";
+        };
+        track.addEventListener("scroll", updateArrows, { passive: true });
+        updateArrows();
+    }
+</script>
