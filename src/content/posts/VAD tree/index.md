@@ -6,7 +6,7 @@ tags: ["C++", "Win32", "WinDbg", "malware"]
 category: Windows Internals
 image: "./cover.jpg"
 draft: false
-featured: true
+featured: false
 ---
 
 > The Dragon Blood Tree (__Dracaena cinnibari__), a real life binary tree
